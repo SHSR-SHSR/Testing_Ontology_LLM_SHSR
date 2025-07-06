@@ -69,9 +69,11 @@
     <classifier>${os.detected.name}-${os.detected.arch}</classifier>
     <version>${jlama.version}</version> <!-- Version from langchain4j-jlama pom -->
 </dependency>
-    
-    
-    
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>hootation-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

@@ -4,9 +4,7 @@ import edu.utmb.ontology.hootation.core.Hootation;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Hello world!
- */
+
 public class FineTuning {
     
     private File ontology_file;
@@ -21,6 +19,8 @@ public class FineTuning {
         
         return natural_language_statements;
     }
+    
+    
     
     public static void main(String[] args) {
         

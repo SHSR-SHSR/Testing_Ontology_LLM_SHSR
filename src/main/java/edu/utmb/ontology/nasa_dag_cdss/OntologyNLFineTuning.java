@@ -1,5 +1,6 @@
 package edu.utmb.ontology.nasa_dag_cdss;
 
+import dev.langchain4j.model.input.PromptTemplate;
 import edu.utmb.ontology.hootation.core.Hootation;
 import java.io.File;
 import java.util.ArrayList;
@@ -9,7 +10,22 @@ public class OntologyNLFineTuning {
     
     private String ontology_file = null;
     
+    private PromptTemplate tuning_instructions;
+
+    public PromptTemplate getTuning_instructions() {
+        return tuning_instructions;
+    }
+    
     public OntologyNLFineTuning(){
+        
+        StringBuilder instruction_builder = new StringBuilder();
+        
+        instruction_builder.append("Given the following information: \n");
+        instruction_builder.append("{{information}}\n");
+        instruction_builder.append("State the given information and provide a response for the question based on the given information only: \n");
+        instruction_builder.append("Question: {{question}}\n");
+        instruction_builder.append("Response:\n");
+        tuning_instructions = PromptTemplate.from(instruction_builder.toString());
         
     }
     
@@ -36,6 +52,9 @@ public class OntologyNLFineTuning {
         
         return file;
     }
+    
+    
+    
     
     public static void main(String[] args) {
         

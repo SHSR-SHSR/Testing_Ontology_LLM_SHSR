@@ -11,3 +11,7 @@ Repository for testing backend components for an experimental knowledge base-bac
 * Luis Garcia Diaz (TAMIU)
 * Yang Gong, MD, PhD (UTHealth)
 * Ronak Shah, DO, MPH, MBA (UTMB)
+
+## Acknowledgements
+
+Project was supported through the UTHealth- Houston-CPRIT Innovation for Cancer Prevention Research Training Program Summer Undergraduate Fellowship (Cancer Prevention & Research Institute of Texas Grant #RP210042)

@@ -79,9 +79,9 @@
     <version>2.20.0</version>
 </dependency>
     <dependency>
-      <groupId>edu.utmb.ontology</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>hootation-core</artifactId>
-      <version>1.0</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

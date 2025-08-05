@@ -45,6 +45,10 @@ public class ExperimentalEngine {
     
     private Embedding inquiry_embedding;
     
+    private int searchMaxResults = 3;
+    private double minScoreSearch = 0.7;
+    private float chatModelTemperature = 0.2f;
+    
     public ExperimentalEngine(){
         tuner = new OntologyNLFineTuning();
     }
@@ -105,8 +109,8 @@ public class ExperimentalEngine {
         
         EmbeddingSearchRequest embeddingRequest = EmbeddingSearchRequest.builder()
                     .queryEmbedding(inquiry_embedding)
-                    .maxResults(3)
-                    .minScore(0.7)
+                    .maxResults(searchMaxResults)
+                    .minScore(minScoreSearch)
                     .build();
             List<EmbeddingMatch<TextSegment>> relevantEmbeddings = embedding_store.search(embeddingRequest).matches();
             
@@ -130,11 +134,25 @@ public class ExperimentalEngine {
         
     }
     
+    public ChatModel activateDefaultJlamaModel(){
+        return JlamaChatModel.builder()
+                    .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
+                    .temperature(chatModelTemperature) 
+                    .build();
+    }
+    
+    public ChatModel activateJlamaModel(float chat_temperature){
+        return JlamaChatModel.builder()
+                    .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
+                    .temperature(chat_temperature) 
+                    .build();
+    }
+    
     public void activateJlamaModel(Prompt prompt){
         
         ChatModel jlamaModel = JlamaChatModel.builder()
                     .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
-                    .temperature(0.2f) 
+                    .temperature(chatModelTemperature) 
                     .build();
         
         AiMessage message = jlamaModel.chat(prompt.toUserMessage()).aiMessage();
@@ -146,20 +164,7 @@ public class ExperimentalEngine {
     }
     
     public static void main(String[] args) {
-        /* ///EXAMPLE
-        ChatModel model = JlamaChatModel.builder()
-                    .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
-                    .temperature(0.3f)
-                    .build();
 
-            ChatResponse chatResponse = model.chat(
-                    SystemMessage.from("You are helpful chatbot who is a java expert."),
-                    UserMessage.from("Write a java program to print hello world.")
-            );
-
-            System.out.println("\n" + chatResponse.aiMessage().text() + "\n");
-            */
-        
         
         String inquiry_example = "Can you tell me something about cancer from the given information?";
         

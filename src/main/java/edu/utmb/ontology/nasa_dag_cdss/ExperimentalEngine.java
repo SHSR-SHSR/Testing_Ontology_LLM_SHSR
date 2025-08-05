@@ -20,6 +20,7 @@ import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.jlama.JlamaChatModel;
 import dev.langchain4j.model.jlama.JlamaEmbeddingModel;
+import dev.langchain4j.model.jlama.JlamaStreamingChatModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
@@ -134,8 +135,8 @@ public class ExperimentalEngine {
         
     }
     
-    public ChatModel activateDefaultJlamaModel(){
-        return JlamaChatModel.builder()
+    public JlamaStreamingChatModel activateDefaultJlamaModel(){
+        return JlamaStreamingChatModel.builder()
                     .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
                     .temperature(chatModelTemperature) 
                     .build();

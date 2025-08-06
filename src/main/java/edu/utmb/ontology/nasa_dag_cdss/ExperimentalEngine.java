@@ -4,17 +4,10 @@
  */
 package edu.utmb.ontology.nasa_dag_cdss;
 
-import dev.langchain4j.data.document.Document;
-import dev.langchain4j.data.document.DocumentSplitter;
-import static dev.langchain4j.data.document.Metadata.metadata;
-import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.data.message.SystemMessage;
-import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.input.PromptTemplate;
@@ -50,6 +43,8 @@ public class ExperimentalEngine {
     private double minScoreSearch = 0.7;
     private float chatModelTemperature = 0.2f;
     
+    private String storeModel = "intfloat/e5-small-v2";
+    
     public ExperimentalEngine(){
         tuner = new OntologyNLFineTuning();
     }
@@ -67,7 +62,7 @@ public class ExperimentalEngine {
         
         ArrayList<String> axiom_list = tuner.convertAxiomsToNaturalLanguage();
         
-        embedding_model = JlamaEmbeddingModel.builder().modelName("intfloat/e5-small-v2").build();
+        embedding_model = JlamaEmbeddingModel.builder().modelName(storeModel).build();
         
         
         

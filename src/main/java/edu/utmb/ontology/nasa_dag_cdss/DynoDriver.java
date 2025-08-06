@@ -46,15 +46,7 @@ public class DynoDriver {
     public String generateAnswer(String inquiry){
         Prompt promptInquiry = engine.addUserInquiry(inquiry);
         
-        //AiMessage ai_message = jlamaModel.chat(promptInquiry.toUserMessage()).aiMessage();
 
-        //StringBuilder sb = new StringBuilder();
-        //sb.append(ai_message.text());
-
-        
-        
-        
-        
         CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
          
         jlamaModel.chat(inquiry,new StreamingChatResponseHandler() {
@@ -107,7 +99,7 @@ public class DynoDriver {
         
         
         System.out.println("Type a question or type 'exit' to quit");
-        while(true){
+        while(console.hasNext()){
             
             
             
@@ -118,7 +110,7 @@ public class DynoDriver {
             }
             else{
                 
-                System.out.println(dd.generateAnswer(input));
+               dd.generateAnswer(input);
             }
             
             System.out.println("Type a question or type 'exit' to quit");

@@ -43,10 +43,13 @@ public class DynoDriver {
         
     }
     
+    //TODO: implement this function as a thread
     public String generateAnswer(String inquiry){
         Prompt promptInquiry = engine.addUserInquiry(inquiry);
         
 
+        
+        
         CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
          
         jlamaModel.chat(inquiry,new StreamingChatResponseHandler() {
@@ -77,7 +80,7 @@ public class DynoDriver {
     public static void main(String[] args) {
         
         
-        final String user_input = "What does Airlock Design affect?";
+        final String user_input = "What is tha major human health rick during spaceflight?";
         
         System.out.println("\n************************************");
         System.out.println("Starting Dyno Driver for CDSS Engine");

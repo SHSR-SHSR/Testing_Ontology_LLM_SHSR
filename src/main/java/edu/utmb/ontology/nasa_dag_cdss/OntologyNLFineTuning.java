@@ -19,12 +19,22 @@ public class OntologyNLFineTuning {
     public OntologyNLFineTuning(){
         
         StringBuilder instruction_builder = new StringBuilder();
-        
+        /*
         instruction_builder.append("Given the following information: \n");
         instruction_builder.append("{{information}}\n");
         instruction_builder.append("State the given information and provide a response for the question based on the given information only: \n");
         instruction_builder.append("Question: {{question}}\n");
         instruction_builder.append("Response:\n");
+        */
+        
+        //using prompt example from langchain4j
+        instruction_builder.append("Answer the following question to the best of your ability:\n\n");
+        instruction_builder.append("Question: \n");
+        instruction_builder.append("{{question}}\n\n");
+        instruction_builder.append("Base your answer on the following information:\n");
+        instruction_builder.append("{{information}}");
+        
+        
         tuning_instructions = PromptTemplate.from(instruction_builder.toString());
         
     }

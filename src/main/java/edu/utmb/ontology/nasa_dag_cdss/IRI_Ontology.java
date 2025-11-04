@@ -4,13 +4,15 @@
  */
 package edu.utmb.ontology.nasa_dag_cdss;
 
+import org.semanticweb.owlapi.model.IRI;
+
 /**
  *
  * @author mac
  */
 public class IRI_Ontology {
     
-    //static public IRI SLSO = IRI.create("http://purl.obolibrary.org/obo/slso.owl");
-    //static public IRI RBO = IRI.create("http://purl.obolibrary.org/obo/rbo.owl");
+    static public IRI SLSO = IRI.create("http://purl.obolibrary.org/obo/slso.owl");
+    static public IRI RBO = IRI.create("http://purl.obolibrary.org/obo/rbo.owl");
     
 }

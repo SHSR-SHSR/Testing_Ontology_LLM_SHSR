@@ -124,6 +124,11 @@ public class ExperimentalEngine {
             
         Prompt prompt = tuning_instructions.apply(promptInputs);
         
+        
+        System.out.println("The prompt used: ..\n");
+        
+        System.out.println(prompt.toString());
+        
         return prompt;
         
         

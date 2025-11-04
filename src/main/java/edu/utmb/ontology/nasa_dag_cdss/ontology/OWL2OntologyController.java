@@ -4,12 +4,21 @@
  */
 package edu.utmb.ontology.nasa_dag_cdss.ontology;
 
+import edu.utmb.ontology.nasa_dag_cdss.IRI_Ontology;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
+
 /**
  *
  * @author mac
  */
 public class OWL2OntologyController {
-    /*
+    
     private OWLOntology ontology = null;
     private OWLOntologyManager manager = null;
     
@@ -45,5 +54,5 @@ public class OWL2OntologyController {
         instance.initOntology(IRI_Ontology.RBO);
         
     }
-    */
+    
 }

@@ -134,7 +134,7 @@ public class ExperimentalEngine {
         StringBuilder content = new StringBuilder();
         for(String line_content : natural_language_axioms){
             content.append(line_content);
-            content.append(".\n");
+            content.append(". ");
         }
         
         try {
@@ -143,23 +143,23 @@ public class ExperimentalEngine {
             System.getLogger(ExperimentalEngine.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
         
-        System.out.println("Embedding...");
-        DocumentParser documentParser = new TextDocumentParser();
+        //System.out.println("Embedding...");
+       // DocumentParser documentParser = new TextDocumentParser();
         
-        System.out.println("\tLoading... " + file.getAbsolutePath());
-        Document document = loadDocument(file.getAbsolutePath(), documentParser);
+        //System.out.println("\tLoading... " + file.getAbsolutePath());
+        //Document document = loadDocument(file.getAbsolutePath(), documentParser);
          
          //DocumentBySentenceSplitter splitter = new DocumentBySentenceSplitter(30, 0);
-         DocumentSplitter splitter = DocumentSplitters.recursive(300, 0);
-         List<TextSegment> segments = splitter.split(document);
+         //DocumentSplitter splitter = DocumentSplitters.recursive(300, 0);
+         //List<TextSegment> segments = splitter.split(document);
          
-         embedding_model = JlamaEmbeddingModel.builder().modelName(storeModel).build();
-         List<Embedding> embeddings = embedding_model.embedAll(segments).content();
+         //embedding_model = JlamaEmbeddingModel.builder().modelName(storeModel).build();
+         //List<Embedding> embeddings = embedding_model.embedAll(segments).content();
 
          
-        embedding_store = new InMemoryEmbeddingStore<>();
+        //embedding_store = new InMemoryEmbeddingStore<>();
         
-        embedding_store.addAll(embeddings, segments);
+        //embedding_store.addAll(embeddings, segments);
         
     }
     
@@ -204,6 +204,32 @@ public class ExperimentalEngine {
         
     }
     
+    public Prompt addUserInquryAndContext(String inquiry){
+        
+        String nl_ontology_info = "";
+        
+        try {
+            nl_ontology_info = FileUtils.readFileToString(new File("temp_SLE.txt"), "UTF-8");
+        } catch (IOException ex) {
+            System.getLogger(ExperimentalEngine.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+        Map<String, Object> promptInputs = new HashMap<>();
+            promptInputs.put("question", inquiry);
+            promptInputs.put("information", nl_ontology_info);
+        
+         PromptTemplate tuning_instructions = ontology_tuner.getTuning_instructions();
+         Prompt prompt = tuning_instructions.apply(promptInputs);
+
+         
+        System.out.println("The prompt used: ..\n");
+        
+        System.out.println(prompt.toString());
+        
+        return prompt;
+        
+    }
+    
     public Prompt addUserInquiry(String inquiry){
         
         inquiry_embedding = embedding_model.embed(inquiry).content();
@@ -242,7 +268,7 @@ public class ExperimentalEngine {
     
     public JlamaStreamingChatModel activateDefaultJlamaModel(){
         return JlamaStreamingChatModel.builder()
-                    .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
+                    .modelName("tjake/Qwen2.5-0.5B-Instruct-JQ4")
                     .temperature(chatModelTemperature) 
                     .build();
     }

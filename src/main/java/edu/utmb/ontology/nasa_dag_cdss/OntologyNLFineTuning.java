@@ -39,11 +39,13 @@ public class OntologyNLFineTuning {
         */
         
         //using prompt example from langchain4j
-        instruction_builder.append("Answer the following question to the best of your ability:\n\n");
+        //instruction_builder.append("Answer the following question to the best of your ability:\n\n");
+        instruction_builder.append("Given this contextual information from an ontology for human safety of spaceflight:\n");
+        instruction_builder.append("{{information}}\n");
+        instruction_builder.append("Summarize the contextual information and provide an answer based on that given information for this question: \n");
         instruction_builder.append("Question: \n");
         instruction_builder.append("{{question}}\n\n");
-        instruction_builder.append("Base your answer on the following information:\n");
-        instruction_builder.append("{{information}}");
+        
         
         
         tuning_instructions = PromptTemplate.from(instruction_builder.toString());

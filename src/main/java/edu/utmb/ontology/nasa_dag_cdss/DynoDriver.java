@@ -50,6 +50,39 @@ public class DynoDriver {
         
     }
     
+    public String generateAnswerWithOntoRAG(String inquiry){
+        Prompt prompt_inquiry = engine.addUserInquryAndContext(inquiry);
+        
+        CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
+         
+        jlamaModel.chat(inquiry,new StreamingChatResponseHandler() {
+
+            @Override
+            public void onPartialResponse(String partialResponse) {
+                System.out.print(partialResponse);
+            }
+
+            @Override
+            public void onCompleteResponse(ChatResponse completeResponse) {
+                futureResponse.complete(completeResponse);
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                futureResponse.completeExceptionally(error);
+            }
+            
+            
+        });
+       
+        ChatResponse chat_response = futureResponse.join();
+         
+        
+        
+         return chat_response.aiMessage().text();
+        
+    }
+    
     //TODO: implement this function as a thread
     public String generateAnswer(String inquiry){
         Prompt promptInquiry = engine.addUserInquiry(inquiry);
@@ -103,7 +136,9 @@ public class DynoDriver {
         System.out.println("************************************\n");
         
         
-        dd.generateAnswer(user_input);
+        //dd.generateAnswer(user_input);
+        dd.generateAnswerWithOntoRAG(user_input);
+        
         
         /*
         Scanner console = new Scanner(System.in);

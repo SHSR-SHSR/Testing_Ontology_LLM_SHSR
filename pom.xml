@@ -48,6 +48,29 @@
     <version>1.1.0-beta7</version>
 </dependency>
 
+<!-- https://mvnrepository.com/artifact/org.geneontology/relation-graph -->
+        <dependency>
+            <groupId>org.geneontology</groupId>
+            <artifactId>relation-graph_2.13</artifactId>
+            <version>2.3.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.jena</groupId>
+                    <artifactId>apache-jena-libs</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+                <!-- https://mvnrepository.com/artifact/org.obolibrary.robot/robot -->
+
+
+        <dependency>
+            <groupId>com.github.galigator.openllet</groupId>
+            <artifactId>openllet-owlapi</artifactId>
+            <version>2.6.5</version>
+        </dependency>
+   
+
 <dependency>
     <groupId>net.sourceforge.owlapi</groupId>
     <artifactId>owlapi-distribution</artifactId>
@@ -87,6 +110,7 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>hootation-core</artifactId>
       <version>${project.version}</version>
+      <classifier>shaded</classifier>
     </dependency>
   </dependencies>
 

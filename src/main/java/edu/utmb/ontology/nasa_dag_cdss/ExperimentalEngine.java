@@ -4,6 +4,13 @@
  */
 package edu.utmb.ontology.nasa_dag_cdss;
 
+import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.document.DocumentParser;
+import dev.langchain4j.data.document.DocumentSplitter;
+import static dev.langchain4j.data.document.loader.FileSystemDocumentLoader.loadDocument;
+import dev.langchain4j.data.document.parser.TextDocumentParser;
+import dev.langchain4j.data.document.splitter.DocumentBySentenceSplitter;
+import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.segment.TextSegment;
@@ -18,11 +25,14 @@ import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static java.util.stream.Collectors.joining;
+import org.apache.commons.io.FileUtils;
 /**
  *
  * @author mac
@@ -55,6 +65,49 @@ public class ExperimentalEngine {
         tuner.addOntology(file_path);
         
         
+    }
+    
+    public void embedFineTuneTextContent(){
+        
+        //create text content
+        ArrayList<String> axiom_list = tuner.convertAxiomsToNaturalLanguage();
+        File file = new File("temp.txt");
+        
+        
+        System.out.println("creating document");
+        StringBuilder content = new StringBuilder();
+        
+        for(String line_content : axiom_list){
+            
+            content.append(line_content);
+            content.append(". \n");
+            
+        }
+        
+        try {
+            FileUtils.writeStringToFile(file, content.toString(), "UTF-8");
+        } catch (IOException ex) {
+            System.getLogger(ExperimentalEngine.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+        
+        System.out.println("Embedding...");
+        DocumentParser documentParser = new TextDocumentParser();
+        
+        System.out.println("\tLoading... " + file.getAbsolutePath());
+        Document document = loadDocument(file.getAbsolutePath(), documentParser);
+         
+         //DocumentBySentenceSplitter splitter = new DocumentBySentenceSplitter(30, 0);
+         DocumentSplitter splitter = DocumentSplitters.recursive(300, 0);
+         List<TextSegment> segments = splitter.split(document);
+         
+         embedding_model = JlamaEmbeddingModel.builder().modelName(storeModel).build();
+         List<Embedding> embeddings = embedding_model.embedAll(segments).content();
+
+         
+        embedding_store = new InMemoryEmbeddingStore<>();
+        
+        embedding_store.addAll(embeddings, segments);
     }
     
     
@@ -120,7 +173,7 @@ public class ExperimentalEngine {
         
         Map<String, Object> promptInputs = new HashMap<>();
             promptInputs.put("question", inquiry);
-            promptInputs.put("information", information);
+            //promptInputs.put("information", information);
             
         Prompt prompt = tuning_instructions.apply(promptInputs);
         

@@ -5,10 +5,12 @@
 package edu.utmb.ontology.nasa_dag_cdss.ontology;
 
 import edu.utmb.ontology.nasa_dag_cdss.IRI_Ontology;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -21,6 +23,7 @@ public class OWL2OntologyController {
     
     private OWLOntology ontology = null;
     private OWLOntologyManager manager = null;
+    private OWLDataFactory factory;
     
     private OWL2OntologyController() {
     }
@@ -32,6 +35,34 @@ public class OWL2OntologyController {
     private static class OWL2OntologyControllerHolder {
 
         private static final OWL2OntologyController INSTANCE = new OWL2OntologyController();
+    }
+    
+    public void initOntology(String path_ontology_file){
+        try {
+            manager = OWLManager.createConcurrentOWLOntologyManager();
+            
+            manager.loadOntologyFromOntologyDocument(new File(path_ontology_file));
+            
+            factory = manager.getOWLDataFactory();
+            
+        } catch (OWLOntologyCreationException ex) {
+            System.getLogger(OWL2OntologyController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+    }
+    
+    public OWLDataFactory getOWLDataFactory(){
+        
+        return factory;
+        
+    }
+    
+    public OWLOntologyManager getOWLOntologyManager(){
+        return manager;
+    }
+    
+    public OWLOntology getOWLOntology(){
+        return ontology;
     }
     
     public void initOntology(IRI iri_ontology){

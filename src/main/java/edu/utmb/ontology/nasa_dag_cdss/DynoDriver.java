@@ -24,7 +24,11 @@ public class DynoDriver {
     
     private StreamingChatModel jlamaModel = null;
     
-    static private String NASA_Human_Health_KG = "/Users/mac/Desktop/ndkg.rdf";
+    static private String NASA_Human_Health_KG = "/Users/mac/Desktop/ndkg-final.owl";
+    
+    //static private String SPACE_LIFE_SCIENCE = "/Users/mac/NetBeansProjects/nasa_dag_cdss/slso.owl";
+    
+    //static private String OMRSE ="/Users/mac/Desktop/bsso/omrse.owl";
     
     public DynoDriver(){
         
@@ -34,8 +38,8 @@ public class DynoDriver {
     
     public void initalize(){
         engine.importFineTuningContent(NASA_Human_Health_KG);
-        engine.embeddFineTuneContent();
-        
+        //engine.embeddFineTuneContent();
+        engine.embedFineTuneTextContent();
         jlamaModel = engine.activateDefaultJlamaModel();
     }
     
@@ -67,7 +71,9 @@ public class DynoDriver {
             @Override
             public void onError(Throwable error) {
                 futureResponse.completeExceptionally(error);
-            }    
+            }
+            
+            
         });
        
         ChatResponse chat_response = futureResponse.join();
@@ -79,8 +85,7 @@ public class DynoDriver {
     
     public static void main(String[] args) {
         
-        
-        final String user_input = "What is tha major human health rick during spaceflight?";
+        final String user_input = "What does humidity affect?";
         
         System.out.println("\n************************************");
         System.out.println("Starting Dyno Driver for CDSS Engine");

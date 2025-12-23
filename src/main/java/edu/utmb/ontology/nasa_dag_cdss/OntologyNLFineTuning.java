@@ -2,8 +2,19 @@ package edu.utmb.ontology.nasa_dag_cdss;
 
 import dev.langchain4j.model.input.PromptTemplate;
 import edu.utmb.ontology.hootation.core.Hootation;
+import edu.utmb.ontology.nasa_dag_cdss.ontology.OWL2OntologyController;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
+import uk.ac.manchester.cs.owlapi.modularity.ModuleType;
+import uk.ac.manchester.cs.owlapi.modularity.SyntacticLocalityModuleExtractor;
 
 
 public class OntologyNLFineTuning {
@@ -49,6 +60,37 @@ public class OntologyNLFineTuning {
         ArrayList<String> natural_language_statements = hootation.get_naturalLangaugeStatements(this.ontology_file);
         
         return natural_language_statements;
+    }
+    
+    public ArrayList<String> convertAxiomsToNaturalLanguage(Set<OWLAxiom> axiom_lists){
+        
+        Hootation hootation = new Hootation();
+        
+        ArrayList<String> results = hootation.get_naturalLanguageStatements(axiom_lists, ontology_file);
+        
+        return results;
+    }
+    
+    public Set<OWLAxiom> getRelatedAxioms(Set<OWLClass> entities){
+        
+         Set<OWLAxiom> extract = null;
+        
+        OWL2OntologyController instance = OWL2OntologyController.getInstance();
+        
+        OWLOntologyManager ontology_manager = instance.getOWLOntologyManager();
+        OWLOntology ontology = instance.getOWLOntology();
+        OWLDataFactory data_factory = instance.getOWLDataFactory();
+        
+        SyntacticLocalityModuleExtractor SLE = new SyntacticLocalityModuleExtractor(ontology_manager, ontology, ModuleType.STAR);
+        
+        
+        Set<OWLEntity> seed = new HashSet<OWLEntity>();
+        seed.addAll(entities);
+        
+        extract = SLE.extract(seed);
+        
+        return extract;
+        
     }
     
     public File RBO(){

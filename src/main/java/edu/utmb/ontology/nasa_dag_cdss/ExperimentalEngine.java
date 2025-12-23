@@ -9,7 +9,6 @@ import dev.langchain4j.data.document.DocumentParser;
 import dev.langchain4j.data.document.DocumentSplitter;
 import static dev.langchain4j.data.document.loader.FileSystemDocumentLoader.loadDocument;
 import dev.langchain4j.data.document.parser.TextDocumentParser;
-import dev.langchain4j.data.document.splitter.DocumentBySentenceSplitter;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.AiMessage;
@@ -54,7 +53,7 @@ public class ExperimentalEngine {
     private Embedding inquiry_embedding;
     
     private int searchMaxResults = 3;
-    private double minScoreSearch = 0.7;
+    private double minScoreSearch = 0.85;
     private float chatModelTemperature = 0.2f;
     
     private String storeModel = "intfloat/e5-small-v2";
@@ -119,8 +118,8 @@ public class ExperimentalEngine {
         //add ontology related terms
         OWL2OntologyController owl_controller = OWL2OntologyController.getInstance();
         
-        //humididty
-        owl_controller.addSeedClassTerm("http://purl.org/utmb/ndkg-base.owl#NDKG_0000518");
+        //aerospace planned process
+        owl_controller.addSeedClassTerm("http://purl.org/utmb/ndkg-base.owl#NDKG_0000568");
         
         Set<OWLEntity> seedList = owl_controller.getSeedList();
         
@@ -143,23 +142,6 @@ public class ExperimentalEngine {
             System.getLogger(ExperimentalEngine.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
         
-        //System.out.println("Embedding...");
-       // DocumentParser documentParser = new TextDocumentParser();
-        
-        //System.out.println("\tLoading... " + file.getAbsolutePath());
-        //Document document = loadDocument(file.getAbsolutePath(), documentParser);
-         
-         //DocumentBySentenceSplitter splitter = new DocumentBySentenceSplitter(30, 0);
-         //DocumentSplitter splitter = DocumentSplitters.recursive(300, 0);
-         //List<TextSegment> segments = splitter.split(document);
-         
-         //embedding_model = JlamaEmbeddingModel.builder().modelName(storeModel).build();
-         //List<Embedding> embeddings = embedding_model.embedAll(segments).content();
-
-         
-        //embedding_store = new InMemoryEmbeddingStore<>();
-        
-        //embedding_store.addAll(embeddings, segments);
         
     }
     
@@ -268,7 +250,7 @@ public class ExperimentalEngine {
     
     public JlamaStreamingChatModel activateDefaultJlamaModel(){
         return JlamaStreamingChatModel.builder()
-                    .modelName("tjake/Qwen2.5-0.5B-Instruct-JQ4")
+                    .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
                     .temperature(chatModelTemperature) 
                     .build();
     }

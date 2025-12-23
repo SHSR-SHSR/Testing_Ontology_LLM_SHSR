@@ -4,15 +4,11 @@
  */
 package edu.utmb.ontology.nasa_dag_cdss;
 
-import dev.langchain4j.data.message.AiMessage;
-import static dev.langchain4j.model.LambdaStreamingResponseHandler.onPartialResponse;
-import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.input.Prompt;
 import edu.utmb.ontology.nasa_dag_cdss.ontology.OWL2OntologyController;
-import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -121,7 +117,7 @@ public class DynoDriver {
     
     public static void main(String[] args) {
         
-        final String user_input = "What does humidity affect?";
+        final String user_input = "what is a planned aerospace process?";
         
         System.out.println("\n************************************");
         System.out.println("Starting Dyno Driver for CDSS Engine");

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -40,11 +39,13 @@ public class OntologyNLFineTuning {
         
         //using prompt example from langchain4j
         //instruction_builder.append("Answer the following question to the best of your ability:\n\n");
-        instruction_builder.append("Given this contextual information from an ontology for human safety of spaceflight:\n");
-        instruction_builder.append("{{information}}\n");
-        instruction_builder.append("Summarize the contextual information and provide an answer based on that given information for this question: \n");
-        instruction_builder.append("Question: \n");
+        instruction_builder.append("You are a helpful chatbot who writes short responses.\n");
+        instruction_builder.append("Here is a question:\n");
         instruction_builder.append("{{question}}\n\n");
+        instruction_builder.append("Answer the question based on the following contextual information: \n");
+        instruction_builder.append("{{information}} \n\n");
+        instruction_builder.append("Keep your response within the context of the information provided ONLY.\n");
+        
         
         
         
@@ -110,16 +111,5 @@ public class OntologyNLFineTuning {
     
     
     
-    public static void main(String[] args) {
-        
-        OntologyNLFineTuning tune = new OntologyNLFineTuning();
-        tune.addOntology("/Users/mac/NetBeansProjects/nasa_dag_cdss/rbo.owl");
-        
-        ArrayList<String> nl_list = tune.convertAxiomsToNaturalLanguage();
-        
-        for(String s : nl_list){
-            System.out.println(s);
-        }
-        
-    }
+    
 }

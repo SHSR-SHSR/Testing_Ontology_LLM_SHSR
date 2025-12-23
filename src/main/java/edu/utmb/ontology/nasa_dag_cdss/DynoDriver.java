@@ -11,6 +11,7 @@ import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.input.Prompt;
+import edu.utmb.ontology.nasa_dag_cdss.ontology.OWL2OntologyController;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
@@ -39,7 +40,9 @@ public class DynoDriver {
     public void initalize(){
         engine.importFineTuningContent(NASA_Human_Health_KG);
         //engine.embeddFineTuneContent();
-        engine.embedFineTuneTextContent();
+        //engine.embedFineTuneTextContent();
+        OWL2OntologyController.getInstance().initOntology(NASA_Human_Health_KG);
+        engine.embedOntologyRelatedFineTuneContent();
         jlamaModel = engine.activateDefaultJlamaModel();
     }
     

@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import static java.util.stream.Collectors.joining;
 import org.apache.commons.io.FileUtils;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 /**
  *
@@ -123,6 +124,43 @@ public class ExperimentalEngine {
         
         Set<OWLEntity> seedList = owl_controller.getSeedList();
         
+        Set<OWLAxiom> relatedAxioms = ontology_tuner.getRelatedAxioms(seedList);
+        
+        ArrayList<String> natural_language_axioms = ontology_tuner.convertAxiomsToNaturalLanguage(relatedAxioms);
+        
+        System.out.println("creating document");
+        
+        File file = new File("temp_SLE.txt");
+        StringBuilder content = new StringBuilder();
+        for(String line_content : natural_language_axioms){
+            content.append(line_content);
+            content.append(".\n");
+        }
+        
+        try {
+            FileUtils.writeStringToFile(file, content.toString(), "UTF-8");
+        } catch (IOException ex) {
+            System.getLogger(ExperimentalEngine.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+        System.out.println("Embedding...");
+        DocumentParser documentParser = new TextDocumentParser();
+        
+        System.out.println("\tLoading... " + file.getAbsolutePath());
+        Document document = loadDocument(file.getAbsolutePath(), documentParser);
+         
+         //DocumentBySentenceSplitter splitter = new DocumentBySentenceSplitter(30, 0);
+         DocumentSplitter splitter = DocumentSplitters.recursive(300, 0);
+         List<TextSegment> segments = splitter.split(document);
+         
+         embedding_model = JlamaEmbeddingModel.builder().modelName(storeModel).build();
+         List<Embedding> embeddings = embedding_model.embedAll(segments).content();
+
+         
+        embedding_store = new InMemoryEmbeddingStore<>();
+        
+        embedding_store.addAll(embeddings, segments);
+        
     }
     
     public void embeddFineTuneContent(){
@@ -187,7 +225,7 @@ public class ExperimentalEngine {
         
         Map<String, Object> promptInputs = new HashMap<>();
             promptInputs.put("question", inquiry);
-            //promptInputs.put("information", information);
+            promptInputs.put("information", information);
             
         Prompt prompt = tuning_instructions.apply(promptInputs);
         

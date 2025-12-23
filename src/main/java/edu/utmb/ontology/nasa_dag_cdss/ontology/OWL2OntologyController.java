@@ -46,7 +46,7 @@ public class OWL2OntologyController {
         try {
             manager = OWLManager.createConcurrentOWLOntologyManager();
             
-            manager.loadOntologyFromOntologyDocument(new File(path_ontology_file));
+            ontology  = manager.loadOntologyFromOntologyDocument(new File(path_ontology_file));
             
             factory = manager.getOWLDataFactory();
             

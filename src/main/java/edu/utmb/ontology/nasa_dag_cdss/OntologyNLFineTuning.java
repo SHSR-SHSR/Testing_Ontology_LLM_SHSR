@@ -71,7 +71,7 @@ public class OntologyNLFineTuning {
         return results;
     }
     
-    public Set<OWLAxiom> getRelatedAxioms(Set<OWLClass> entities){
+    public Set<OWLAxiom> getRelatedAxioms(Set<OWLEntity> entities){
         
          Set<OWLAxiom> extract = null;
         

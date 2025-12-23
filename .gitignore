@@ -1,3 +1,6 @@
 /target
 .DS_Store
 src/main/lib/hootation-core-1.0-shaded.jar
+temp.txt
+rbo.owl
+slso.owl

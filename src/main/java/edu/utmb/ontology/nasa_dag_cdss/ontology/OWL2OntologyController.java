@@ -6,11 +6,15 @@ package edu.utmb.ontology.nasa_dag_cdss.ontology;
 
 import edu.utmb.ontology.nasa_dag_cdss.IRI_Ontology;
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -24,6 +28,7 @@ public class OWL2OntologyController {
     private OWLOntology ontology = null;
     private OWLOntologyManager manager = null;
     private OWLDataFactory factory;
+    private Set<OWLEntity> seed_list = null;
     
     private OWL2OntologyController() {
     }
@@ -48,6 +53,34 @@ public class OWL2OntologyController {
         } catch (OWLOntologyCreationException ex) {
             System.getLogger(OWL2OntologyController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        
+    }
+    
+    public void clearSeedList(){
+        
+        seed_list.clear();
+    }
+    
+    public void addSeedClassTerm(String IRI_string){
+        
+        OWLClass owlClass = factory.getOWLClass(IRI_string);
+        
+        generateSeedList();
+        
+        seed_list.add(owlClass);
+        
+    }
+    
+    public Set<OWLEntity> getSeedList(){
+        return this.seed_list;
+    }
+    
+    private void generateSeedList(){
+        
+        if(seed_list == null){
+            seed_list = new HashSet<OWLEntity>();
+        }
+        
         
     }
     

@@ -25,21 +25,24 @@ import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import edu.utmb.ontology.nasa_dag_cdss.ontology.OWL2OntologyController;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import static java.util.stream.Collectors.joining;
 import org.apache.commons.io.FileUtils;
+import org.semanticweb.owlapi.model.OWLEntity;
 /**
  *
  * @author mac
  */
 public class ExperimentalEngine {
     
-    private OntologyNLFineTuning tuner;
+    private OntologyNLFineTuning ontology_tuner;
     
     private ArrayList<TextSegment> segments;
     
@@ -56,13 +59,13 @@ public class ExperimentalEngine {
     private String storeModel = "intfloat/e5-small-v2";
     
     public ExperimentalEngine(){
-        tuner = new OntologyNLFineTuning();
+        ontology_tuner = new OntologyNLFineTuning();
     }
     
     public void importFineTuningContent(String file_path){
         
         
-        tuner.addOntology(file_path);
+        ontology_tuner.addOntology(file_path);
         
         
     }
@@ -70,7 +73,7 @@ public class ExperimentalEngine {
     public void embedFineTuneTextContent(){
         
         //create text content
-        ArrayList<String> axiom_list = tuner.convertAxiomsToNaturalLanguage();
+        ArrayList<String> axiom_list = ontology_tuner.convertAxiomsToNaturalLanguage();
         File file = new File("temp.txt");
         
         
@@ -110,10 +113,21 @@ public class ExperimentalEngine {
         embedding_store.addAll(embeddings, segments);
     }
     
+    public void embedOntologyRelatedFineTuneContent(){
+        
+        //add ontology related terms
+        OWL2OntologyController owl_controller = OWL2OntologyController.getInstance();
+        
+        //humididty
+        owl_controller.addSeedClassTerm("http://purl.org/utmb/ndkg-base.owl#NDKG_0000518");
+        
+        Set<OWLEntity> seedList = owl_controller.getSeedList();
+        
+    }
     
     public void embeddFineTuneContent(){
         
-        ArrayList<String> axiom_list = tuner.convertAxiomsToNaturalLanguage();
+        ArrayList<String> axiom_list = ontology_tuner.convertAxiomsToNaturalLanguage();
         
         embedding_model = JlamaEmbeddingModel.builder().modelName(storeModel).build();
         
@@ -168,7 +182,7 @@ public class ExperimentalEngine {
                     .collect(joining("\n\n"));
         
         
-        PromptTemplate tuning_instructions = tuner.getTuning_instructions();
+        PromptTemplate tuning_instructions = ontology_tuner.getTuning_instructions();
         
         
         Map<String, Object> promptInputs = new HashMap<>();

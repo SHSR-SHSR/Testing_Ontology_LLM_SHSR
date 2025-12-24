@@ -119,7 +119,7 @@ public class ExperimentalEngine {
         OWL2OntologyController owl_controller = OWL2OntologyController.getInstance();
         
         //aerospace planned process
-        owl_controller.addSeedClassTerm("http://purl.org/utmb/ndkg-base.owl#NDKG_0000568");
+        owl_controller.addSeedClassTerm("http://purl.org/utmb/ndkg.owl#NDKG_0000057");
         
         Set<OWLEntity> seedList = owl_controller.getSeedList();
         

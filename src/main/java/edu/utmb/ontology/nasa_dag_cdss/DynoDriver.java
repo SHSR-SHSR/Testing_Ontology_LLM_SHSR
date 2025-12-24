@@ -117,7 +117,7 @@ public class DynoDriver {
     
     public static void main(String[] args) {
         
-        final String user_input = "what is a planned aerospace process?";
+        final String user_input = "what is aerospace planned process?";
         
         System.out.println("\n************************************");
         System.out.println("Starting Dyno Driver for CDSS Engine");

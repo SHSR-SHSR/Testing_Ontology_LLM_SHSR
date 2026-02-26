@@ -7,19 +7,22 @@ package edu.utmb.ontology.nasa_dag_cdss;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentParser;
 import dev.langchain4j.data.document.DocumentSplitter;
-import static dev.langchain4j.data.document.loader.FileSystemDocumentLoader.loadDocument;
+import static dev.langchain4j.data.document.loader.ClassPathDocumentLoader.loadDocument;
 import dev.langchain4j.data.document.parser.TextDocumentParser;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
+
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.jlama.JlamaChatModel;
 import dev.langchain4j.model.jlama.JlamaEmbeddingModel;
 import dev.langchain4j.model.jlama.JlamaStreamingChatModel;
+
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
@@ -260,6 +263,30 @@ public class ExperimentalEngine {
                     .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
                     .temperature(chat_temperature) 
                     .build();
+    }
+    
+    public void simpleResponseModel(Prompt prompt){
+        
+        File tmpDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "jlama_tests");
+        tmpDir.mkdirs();
+        
+        //tjake/gemma-2-2b-it-JQ4
+        ChatModel jmodel = JlamaChatModel.builder()
+                .modelName("tjake/gemma-2-2b-it-JQ4")
+                .modelCachePath(tmpDir.toPath())
+                .temperature(0.2f)
+                //.maxTokens(64)
+                .build();
+        
+        ChatResponse chat = jmodel.chat(prompt.toUserMessage());
+        
+        AiMessage message = chat.aiMessage();
+        
+        System.out.println("----------\n\n\n");
+        
+        System.out.println(message.text());
+        
+        
     }
     
     public void activateJlamaModel(Prompt prompt){

@@ -46,6 +46,18 @@ public class DynoDriver {
         
     }
     
+    public String simpleGenerateAnswerWithOntoRAG(String inquiry){
+        
+        Prompt prompt_inquiry = engine.addUserInquryAndContext(inquiry);
+        
+        //engine.activateJlamaModel(prompt_inquiry);
+        
+        engine.simpleResponseModel(prompt_inquiry);
+        
+        
+        return null;
+    }
+    
     public String generateAnswerWithOntoRAG(String inquiry){
         Prompt prompt_inquiry = engine.addUserInquryAndContext(inquiry);
         
@@ -133,7 +145,9 @@ public class DynoDriver {
         
         
         //dd.generateAnswer(user_input);
-        dd.generateAnswerWithOntoRAG(user_input);
+        //dd.generateAnswerWithOntoRAG(user_input);
+        dd.simpleGenerateAnswerWithOntoRAG(user_input);
+        
         
         
         /*

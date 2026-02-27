@@ -4,6 +4,9 @@ import dev.langchain4j.model.input.PromptTemplate;
 import edu.utmb.ontology.hootation.core.Hootation;
 import edu.utmb.ontology.nasa_dag_cdss.ontology.OWL2OntologyController;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -67,6 +70,39 @@ public class OntologyNLFineTuning {
     public void addOntology(String string_file){
         this.ontology_file = string_file;
         System.out.println(ontology_file);
+    }
+    
+    public String getOntologyFile(){
+        return this.ontology_file;
+    }
+    
+    public void addOntologyFromResource(String string_file){
+        
+        System.out.println("Strin file is " + string_file);
+        
+        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(string_file);
+        
+        try {
+            File tempFile = File.createTempFile(String.valueOf(in.hashCode()), ".tmp");
+            tempFile.deleteOnExit();
+            
+            try (FileOutputStream out = new FileOutputStream(tempFile)) {
+            //copy stream
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            
+            this.ontology_file = tempFile.getAbsolutePath();
+        }
+            
+        } catch (IOException ex) {
+            System.getLogger(OntologyNLFineTuning.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }finally{
+            
+        }
+        
     }
     
     public ArrayList<String> convertAxiomsToNaturalLanguage(){

@@ -35,11 +35,23 @@ public class DynoDriver {
     
     public void initalize(){
         engine.importFineTuningContent(NASA_Human_Health_KG);
+        
+        
         //engine.embeddFineTuneContent();
         //engine.embedFineTuneTextContent();
         OWL2OntologyController.getInstance().initOntology(NASA_Human_Health_KG);
         engine.embedOntologyRelatedFineTuneContent();
         jlamaModel = engine.activateDefaultJlamaModel();
+    }
+    
+    public void initalizeFromResource(){
+        
+        String ontology_file = engine.importFineTuningContentFromResource("ndkg-final.owl");
+        
+        OWL2OntologyController.getInstance().initOntology(ontology_file);
+        
+        engine.embedOntologyRelatedFineTuneContent();
+        //jlamaModel = engine.activateDefaultJlamaModel();
     }
     
     public void staticQuestion(){
@@ -136,8 +148,8 @@ public class DynoDriver {
         System.out.println("************************************\n");
         
         DynoDriver dd = new DynoDriver();
-        dd.initalize();
-        
+        //dd.initalize();
+        dd.initalizeFromResource();
         
         System.out.println("\n************************************");
         System.out.println("Done initializing, now inputting your response");

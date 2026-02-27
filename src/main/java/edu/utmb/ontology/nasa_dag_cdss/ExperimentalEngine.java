@@ -4,6 +4,10 @@
  */
 package edu.utmb.ontology.nasa_dag_cdss;
 
+import com.github.tjake.jlama.model.AbstractModel;
+import com.github.tjake.jlama.model.ModelSupport;
+import com.github.tjake.jlama.safetensors.DType;
+import com.github.tjake.jlama.util.Downloader;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentParser;
 import dev.langchain4j.data.document.DocumentSplitter;
@@ -35,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import static java.util.stream.Collectors.joining;
 import org.apache.commons.io.FileUtils;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -61,6 +66,8 @@ public class ExperimentalEngine {
     
     private String storeModel = "intfloat/e5-small-v2";
     
+    private String contextData = "";
+    
     public ExperimentalEngine(){
         ontology_tuner = new OntologyNLFineTuning();
     }
@@ -71,6 +78,13 @@ public class ExperimentalEngine {
         ontology_tuner.addOntology(file_path);
         
         
+    }
+    
+    public String importFineTuningContentFromResource(String file_path){
+        //ontology_tuner.addOntology(storeModel);
+        ontology_tuner.addOntologyFromResource(file_path);
+        
+        return ontology_tuner.getOntologyFile();
     }
     
     public void embedFineTuneTextContent(){
@@ -130,21 +144,24 @@ public class ExperimentalEngine {
         
         ArrayList<String> natural_language_axioms = ontology_tuner.convertAxiomsToNaturalLanguage(relatedAxioms);
         
-        System.out.println("creating document");
+        //System.out.println("creating document");
         
-        File file = new File("temp_SLE.txt");
+        //File file = new File("temp_SLE.txt");
         StringBuilder content = new StringBuilder();
         for(String line_content : natural_language_axioms){
             content.append(line_content);
             content.append(". ");
         }
         
+        this.contextData = content.toString();
+        
+        /*
         try {
             FileUtils.writeStringToFile(file, content.toString(), "UTF-8");
         } catch (IOException ex) {
             System.getLogger(ExperimentalEngine.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-        
+        */
         
     }
     
@@ -191,13 +208,15 @@ public class ExperimentalEngine {
     
     public Prompt addUserInquryAndContext(String inquiry){
         
-        String nl_ontology_info = "";
+        String nl_ontology_info = this.contextData;
         
+        /*
         try {
             nl_ontology_info = FileUtils.readFileToString(new File("temp_SLE.txt"), "UTF-8");
         } catch (IOException ex) {
             System.getLogger(ExperimentalEngine.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        */
         
         Map<String, Object> promptInputs = new HashMap<>();
             promptInputs.put("question", inquiry);
@@ -252,16 +271,26 @@ public class ExperimentalEngine {
     }
     
     public JlamaStreamingChatModel activateDefaultJlamaModel(){
+        
+        File tmpDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "jlama_tests");
+        tmpDir.mkdirs();
+        
         return JlamaStreamingChatModel.builder()
-                    .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
+                    .modelName("tjake/gemma-2-2b-it-JQ4")
+                .modelCachePath(tmpDir.toPath())
                     .temperature(chatModelTemperature) 
                     .build();
     }
     
-    public ChatModel activateJlamaModel(float chat_temperature){
+    public ChatModel activateJlamaModel(){
+        
+        File tmpDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "jlama_tests");
+        tmpDir.mkdirs();
+        
         return JlamaChatModel.builder()
-                    .modelName("tjake/Llama-3.2-1B-Instruct-JQ4")
-                    .temperature(chat_temperature) 
+                    .modelName("tjake/gemma-2-2b-it-JQ4")
+                .modelCachePath(tmpDir.toPath())
+                    .temperature(0.2f) 
                     .build();
     }
     
@@ -270,15 +299,23 @@ public class ExperimentalEngine {
         File tmpDir = new File(System.getProperty("java.io.tmpdir") + File.separator + "jlama_tests");
         tmpDir.mkdirs();
         
+        
+        
         //tjake/gemma-2-2b-it-JQ4
         ChatModel jmodel = JlamaChatModel.builder()
-                .modelName("tjake/gemma-2-2b-it-JQ4")
+                .modelName("tjake/granite-3.0-2b-instruct-JQ4")
                 .modelCachePath(tmpDir.toPath())
                 .temperature(0.2f)
                 //.maxTokens(64)
                 .build();
         
+        
+        System.out.println(jmodel.toString() + "\n\n");
+        
         ChatResponse chat = jmodel.chat(prompt.toUserMessage());
+        
+        
+        System.out.println(chat.toString() + "\n\n");
         
         AiMessage message = chat.aiMessage();
         
